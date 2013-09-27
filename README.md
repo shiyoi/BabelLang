@@ -1,0 +1,4 @@
+BabelLang
+=========
+
+Unity localization plugin
