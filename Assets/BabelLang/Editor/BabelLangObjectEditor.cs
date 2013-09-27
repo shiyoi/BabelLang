@@ -7,6 +7,7 @@ using System;
 
 namespace BabelLang
 {
+[CanEditMultipleObjects]
 [CustomEditor(typeof(BabelLangObject))]
 public class BabelLangObjectEditor : Editor
 {
@@ -22,21 +23,29 @@ public class BabelLangObjectEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        BabelLangInfo langInfo = BabelEditor.langInfo;
-        string[] allTextIDs = langInfo.TextIDs;
-
-        IdIndex = Array.IndexOf(allTextIDs, Target.TextID);
-        IdIndex = EditorGUILayout.Popup("TextID", IdIndex, langInfo.TextIDs);
-        if (IdIndex != Array.IndexOf(allTextIDs, Target.TextID))
+        bool isLocalizable = Target.isLocalizable;
+        isLocalizable = EditorGUILayout.Toggle("Localizable", isLocalizable);
+        if (isLocalizable != Target.isLocalizable)
         {
-            Target.TextID = langInfo.TextIDs[IdIndex];
-            Target.Text = langInfo.GetText(langInfo.curLang, Target.TextID);
+            Target.isLocalizable = isLocalizable;
         }
-    }
 
-    public void UpdateLangObject()
-    {
-        Target.Text = BabelEditor.langInfo.GetText(BabelEditor.langInfo.curLang, Target.TextID);
+        if (isLocalizable)
+        {
+            BabelLangInfo langInfo = BabelEditor.langInfo;
+            string[] allTextIDs = langInfo.TextIDs;
+
+            IdIndex = Array.IndexOf(allTextIDs, Target.TextID);
+            IdIndex = EditorGUILayout.Popup("TextID", IdIndex, langInfo.TextIDs);
+            if (IdIndex != Array.IndexOf(allTextIDs, Target.TextID) && IdIndex >= 0)
+            {
+                Target.TextID = langInfo.TextIDs[IdIndex];
+                Target.Text = langInfo.GetText(langInfo.curLang, Target.TextID);
+            }
+        }
+
+        EditorUtility.SetDirty(Target);
+        AssetDatabase.SaveAssets();
     }
 
 }

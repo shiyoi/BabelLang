@@ -27,6 +27,22 @@ namespace BabelLang
             }
         }
 
+        public Font DynamicFont
+        {
+            set
+            {
+                textMesh.font = value;
+            }
+        }
+
+        public Material FontMat
+        {
+            set
+            {
+                renderer.material = value;
+            }
+        }
+
         public string textID;
         public string TextID
         {
@@ -37,9 +53,11 @@ namespace BabelLang
             set
             {
                 textID = value;
-                Text = BabelLang.Instance.GetText(TextID);
+                Text = BabelLang.GetText(TextID);
             }
         }
+
+        public bool isLocalizable = true;
 
         void OnEnable()
         {
@@ -51,9 +69,19 @@ namespace BabelLang
             UpdateLang();
         }
 
+        public void UpdateLang(Font font, Material mat, string text)
+        {
+            DynamicFont = font;
+            FontMat = mat;
+            Text = text;
+        }
+
         public void UpdateLang()
         {
-            Text = BabelLang.Instance.GetText(TextID);
+            if (isLocalizable)
+            {
+                Text = BabelLang.GetText(TextID);
+            }
         }
     }
 }

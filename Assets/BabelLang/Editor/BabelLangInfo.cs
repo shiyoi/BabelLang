@@ -23,7 +23,18 @@ namespace BabelLang
             }
         }
 
-        public string[] TextIDs;
+        public string[] textIDs;
+        public string[] TextIDs
+        {
+            get
+            {
+                return Load().textIDs;
+            }
+            set
+            {
+                textIDs = value;
+            }
+        }
 
         public Hashtable langTable;
         public LangCode curLang = LangCode.EN;
@@ -54,11 +65,12 @@ namespace BabelLang
 
         public string GetText(LangCode langCode, string textID)
         {
-            if (langTable == null)
+            if (langTable == null || langTable.Count == 0)
             {
-                langTable = LoadJson(langCode);
-            }
+                langTable = LoadJson(langCode);  
+            }  
 
+            Debug.Log("BabelLangInfo GetText textID " + " text is " + (string)langTable[textID]);
             return (string)langTable[textID];
         }
     }

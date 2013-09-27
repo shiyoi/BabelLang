@@ -27,13 +27,13 @@ namespace BabelLang
             }
         }
 
-        public LangCode CurLangCode
+        public static LangCode CurLangCode
         {
             get;
             private set;
         }
 
-        Hashtable langTable = new Hashtable();
+        static Hashtable langTable = new Hashtable();
 
         void Awake()
         {
@@ -41,7 +41,7 @@ namespace BabelLang
             LoadLang();
         }
 
-        void LoadLang()
+        static void LoadLang()
         {
             TextAsset langFile = (TextAsset)Resources.Load("BabelLangs/" + CurLangCode.ToString(), typeof(TextAsset));
             Debug.Log("TextAsset is " + langFile.text);
@@ -59,6 +59,8 @@ namespace BabelLang
             {
                 sysLang = LangCode.ZH_CN;
             }
+
+            Debug.Log("SystemLanguage is " + sysLang);
             return sysLang;
         }
 
@@ -78,9 +80,22 @@ namespace BabelLang
             }
         }
 
-        public string GetText(string textID)
+        public static string GetText(string textID)
         {
+            if (langTable == null)
+            {
+                LoadLang();
+            }
+
             return (string)langTable[textID];
+        }
+
+        void OnGUI()
+        {
+            if (GUI.Button(new Rect(100, 100, 100, 100), "test"))
+            {
+                SwitchLang(LangCode.ZH_CN);
+            }
         }
     }
 }

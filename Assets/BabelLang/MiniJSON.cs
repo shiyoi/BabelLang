@@ -17,6 +17,8 @@ using System.Collections.Generic;
 /// JSON uses Arrays and Objects. These correspond here to the datatypes ArrayList and Hashtable.
 /// All numbers are parsed to doubles.
 /// </summary>
+namespace BabelLang
+{
 public class MiniJSON
 {
     private const int TOKEN_NONE = 0;
@@ -646,7 +648,9 @@ public class MiniJSON
     {
         builder.Append( "\"" );
 
-        char[] charArray = aString.ToCharArray();
+        builder.Append(aString);
+
+        /*char[] charArray = aString.ToCharArray();
         for ( int i = 0; i < charArray.Length; i++ )
         {
             char c = charArray[i];
@@ -691,7 +695,7 @@ public class MiniJSON
                     builder.Append(c);
                 }
             }
-        }
+        }*/
 
         builder.Append( "\"" );
     }
@@ -737,3 +741,4 @@ public static class MiniJsonExtensions
 }
 
 #endregion
+}
