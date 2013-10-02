@@ -7,6 +7,7 @@ namespace BabelLang
 {
     public enum LangCode
     {
+        NONE,
         EN,
         ZH_CN,
         ZH_TW
@@ -35,22 +36,30 @@ namespace BabelLang
 
         static Hashtable langTable = new Hashtable();
 
-        void Awake()
+        public void Init(LangCode language)
         {
-            CurLangCode = GetSystemLang();
+            if (language == LangCode.NONE)
+            {
+                CurLangCode = GetSystemLang(); 
+            }
+            else
+            {
+                CurLangCode = language;
+            }
+
             LoadLang();
         }
 
         static void LoadLang()
         {
             TextAsset langFile = (TextAsset)Resources.Load("BabelLangs/" + CurLangCode.ToString(), typeof(TextAsset));
-            Debug.Log("TextAsset is " + langFile.text);
             langTable = (Hashtable)MiniJSON.jsonDecode(langFile.text);
         }
 
         LangCode GetSystemLang()
         {
             LangCode sysLang = LangCode.EN;
+#if UNITY_EDITOR || UNITY_STANDALONE
             if (Application.systemLanguage == SystemLanguage.English)
             {
                 sysLang = LangCode.EN;
@@ -59,8 +68,32 @@ namespace BabelLang
             {
                 sysLang = LangCode.ZH_CN;
             }
+#elif UNITY_IPHONE
+            string iosLanguage = PlayerPrefs.GetString("language");
+            if (iosLanguage == "zh-Hant")
+            {
+                sysLang = LangCode.ZH_TW;
+            }
+            else if (iosLanguage == "zh-Hans")
+            {
+                sysLang = LangCode.ZH_CN;
+            }
 
-            Debug.Log("SystemLanguage is " + sysLang);
+#elif UNITY_ANDROID
+            AndroidJavaObject androidSysLang = new AndroidJavaObject("com.psychizen.systemlanguage.AndroidSysLang");
+            androidSysLang.CallStatic("GetSysLanguage");
+            string androidLanguage = androidSysLang.GetStatic<string>("langCode");
+            Debug.Log("Android sys lang is " + androidLanguage);
+            if (androidLanguage == "zh_CN" || androidLanguage == "zh")
+            {
+                sysLang = LangCode.ZH_CN;
+            }
+            else if (androidLanguage == "zh_TW")
+            {
+                sysLang = LangCode.ZH_TW;
+            }      
+#endif
+            Debug.Log("Unity SystemLanguage is " + sysLang);
             return sysLang;
         }
 
@@ -90,12 +123,23 @@ namespace BabelLang
             return (string)langTable[textID];
         }
 
-        void OnGUI()
+        /*void OnGUI()
         {
             if (GUI.Button(new Rect(100, 100, 100, 100), "test"))
             {
-                SwitchLang(LangCode.ZH_CN);
+                if (CurLangCode == LangCode.EN)
+                {
+                    SwitchLang(LangCode.ZH_CN);
+                }
+                else if (CurLangCode == LangCode.ZH_CN)
+                {
+                    SwitchLang(LangCode.ZH_TW);
+                }
+                else if (CurLangCode == LangCode.ZH_TW)
+                {
+                    SwitchLang(LangCode.EN);
+                }
             }
-        }
+        }*/
     }
 }

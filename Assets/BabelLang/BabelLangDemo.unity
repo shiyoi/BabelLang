@@ -200,7 +200,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1785739638}
-  m_Text: "\u56FE\u50CF"
+  m_Text: "\u7ECF\u5178\u6A21\u5F0F"
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
@@ -239,5 +239,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0c5bcb23e8794db68ef6a7809e82a66, type: 3}
   m_Name: 
-  textID: CREDIT_GRAPHIC
+  textID: BUTTON_CLASSIC
   isLocalizable: 1
